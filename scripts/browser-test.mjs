@@ -25,6 +25,9 @@ try{
  assert.equal(await card.locator('.paper').count(),0);
  await page.selectOption('#state','No paper Tray 2');
  assert.equal(await card.locator('.status').textContent(),'Kein Papier · Fach 2');
+ assert.equal(await card.locator('.raw').count(),0);
+ await card.evaluate(el=>{const hass=el.hass;const id='sensor.demo_total';el.hass={...hass,states:{...hass.states,[id]:{...hass.states[id],attributes:{unit_of_measurement:'pages'}}}};});
+ assert.equal(await card.locator('.stat').first().locator('strong').textContent(),'32.510 Seiten');
  await editor.locator('#entity-cyan').fill('');await editor.locator('#entity-cyan').press('Tab');
  assert.equal(await card.locator('.toner').count(),3);
  await editor.locator('#entity-cyan').fill('sensor.nonexistent');await editor.locator('#entity-cyan').press('Tab');

@@ -42,3 +42,10 @@ test('Escaping and units',()=>{
   assert.equal(displayState({state:'12345',attributes:{unit_of_measurement:'pages'}},'en'),'12,345 pages');
   assert.equal(displayState({state:'unavailable'},'en'),'—');
 });
+
+test('German page units are localized while other units and English remain unchanged',()=>{
+  for(const unit of ['pages','page','Pages']) assert.equal(displayState({state:'4980',attributes:{unit_of_measurement:unit}},'de'),'4.980 Seiten');
+  assert.equal(displayState({state:'84',attributes:{unit_of_measurement:'%'}},'de'),'84 %');
+  assert.equal(displayState({state:'4980',attributes:{unit_of_measurement:'pages'}},'en'),'4,980 pages');
+  assert.equal(displayState({state:'4980',attributes:{}},'de'),'4.980');
+});

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 — 2026-10-05
+
+- Erkannte Statusmeldungen werden nur einmal angezeigt; die zusätzliche Rohtextzeile entfällt.
+- Englische Sensoreinheiten `page`/`pages` erscheinen auf Deutsch als „Seiten“.
+
 ## 1.0.0 — 2026-10-05
 
 - Generic printer card with ten optional entity assignments and a visual editor.

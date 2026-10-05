@@ -39,7 +39,7 @@ export class PrinterCard extends HTMLElement {
     const missing=Object.entries(e).filter(([,id])=>id && !states[id]);
     this.shadowRoot.innerHTML=`<style>${CARD_STYLE}</style><ha-card style="--status-color:${STATUS_COLORS[status.kind]}">
       <header>${e.status?`<button class="head-button" ${entityAttr(e.status)} aria-label="${escapeHTML(t.more+': '+title)}">`:'<div class="head-button">'}<span class="printer ${active?'printing':''}">${PRINTER_SVG}</span><h2>${escapeHTML(title)}</h2>${e.status?'</button>':'</div>'}</header>
-      ${e.status?`<p class="status" role="status">${escapeHTML(statusText)}</p>${raw && !['unknown','unavailable'].includes(raw) && raw!==statusText?`<p class="raw">${escapeHTML(raw)}</p>`:''}`:''}
+      ${e.status?`<p class="status" role="status">${escapeHTML(statusText)}</p>`:''}
       ${active?'<div class="paper-slot" aria-hidden="true"><div class="paper"></div></div>':''}
       ${tonerMarkup?`<div class="toners">${tonerMarkup}</div>`:''}
       ${e.drum?`<button class="drum" ${entityAttr(e.drum)}><span>${t.drum}</span><strong>${escapeHTML(displayState(states[e.drum],lang))}</strong></button>`:''}

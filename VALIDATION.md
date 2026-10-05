@@ -2,7 +2,9 @@
 
 ## Erfolgreich geprüft
 
-- Sieben automatisierte Logiktests: Statusprioritäten, DE/EN-Muster, Fach 1/2, Ersatzmuster und leere Kategorien, exakte/Wildcard-Erkennung, Prozentwerte, Konfigurationsvalidierung und HTML-Escaping.
+- Version 1.0.1: keine zusätzliche Status-Rohtextzeile; deutsche Seiten-Einheit im tatsächlichen Browser-Rendering geprüft.
+
+- Acht automatisierte Logiktests: Statusprioritäten, DE/EN-Muster, Fach 1/2, Ersatzmuster und leere Kategorien, exakte/Wildcard-Erkennung, Prozentwerte, Konfigurationsvalidierung und HTML-Escaping.
 - Distribution gebaut und JavaScript-Syntax geprüft.
 - Die tatsächliche gebaute Distribution wurde in lokalem Chrome mit Playwright geladen. Keine JavaScript-Browserfehler.
 - Vier Kartuschen, niedriger Tonerstand, zehn Editorfelder und Entitätsvorschläge.

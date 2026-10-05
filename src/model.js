@@ -75,5 +75,7 @@ export function displayState(entity, locale) {
   if (!entity || ['unknown','unavailable',''].includes(entity.state)) return '—';
   const number = Number(entity.state);
   const value = entity.state.trim() && Number.isFinite(number) ? new Intl.NumberFormat(locale).format(number) : entity.state;
-  return `${value}${entity.attributes?.unit_of_measurement ? ' '+entity.attributes.unit_of_measurement : ''}`;
+  const originalUnit = entity.attributes?.unit_of_measurement;
+  const unit = String(locale).startsWith('de') && /^pages?$/i.test(String(originalUnit ?? '').trim()) ? 'Seiten' : originalUnit;
+  return `${value}${unit ? ' '+unit : ''}`;
 }

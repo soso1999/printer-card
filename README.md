@@ -91,9 +91,9 @@ entities:
 
 Tonerentitäten müssen den **verbleibenden Prozentwert** liefern. Zahlen und Prozentstrings wie `42`, `42%` oder `42,5` werden akzeptiert und auf 0–100 begrenzt. Es wird nicht automatisch aus Seitenständen, Kapazitäten oder einem verbrauchten Anteil umgerechnet; dafür gegebenenfalls einen HA-Template-Sensor vorschalten.
 
-Die Trommel kann Prozent oder Restseiten liefern: Wert und `unit_of_measurement` der Entität werden angezeigt. Die anderen Zähler werden ebenfalls mit ihrer vorhandenen Einheit dargestellt; Duplex ist ein Anzeigewert, kein Schalter. Für die Daten ist eine passende Drucker-/SNMP-/Template-Integration erforderlich. Die Karte fragt selbst keinen Drucker ab.
+Die Trommel kann Prozent oder Restseiten liefern: Wert und `unit_of_measurement` der Entität werden angezeigt. Bei deutscher Anzeigesprache wird die Einheit `page`/`pages` als „Seiten“ angezeigt. Die anderen Zähler werden ebenfalls mit ihrer vorhandenen Einheit dargestellt; Duplex ist ein Anzeigewert, kein Schalter. Für die Daten ist eine passende Drucker-/SNMP-/Template-Integration erforderlich. Die Karte fragt selbst keinen Drucker ab.
 
-`unknown`, `unavailable`, leere und ungültige Tonerwerte erscheinen als **—**, nicht als 0 %. Zugewiesene, aber nicht gefundene Entitäten werden zusätzlich unter der Karte benannt. Nicht erkannte Druckerzustände bleiben im Original sichtbar. Bei erkannten Zuständen bleibt abweichender Rohtext unter dem übersetzten Status sichtbar.
+`unknown`, `unavailable`, leere und ungültige Tonerwerte erscheinen als **—**, nicht als 0 %. Zugewiesene, aber nicht gefundene Entitäten werden zusätzlich unter der Karte benannt. Nicht erkannte Druckerzustände bleiben im Original sichtbar. Erkannte Zustände werden nur einmal als übersetzter Status angezeigt.
 
 ### Statusmuster
 

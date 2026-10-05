@@ -1,4 +1,4 @@
-/*! Printer Card v1.0.0 | MIT License */
+/*! Printer Card v1.0.1 | MIT License */
 // model.js
 const ENTITY_KEYS = ['status', 'cyan', 'magenta', 'yellow', 'black', 'drum', 'total', 'color', 'bw', 'duplex'];
 const DEFAULT_PATTERNS = Object.freeze({
@@ -77,7 +77,9 @@ function displayState(entity, locale) {
   if (!entity || ['unknown','unavailable',''].includes(entity.state)) return '—';
   const number = Number(entity.state);
   const value = entity.state.trim() && Number.isFinite(number) ? new Intl.NumberFormat(locale).format(number) : entity.state;
-  return `${value}${entity.attributes?.unit_of_measurement ? ' '+entity.attributes.unit_of_measurement : ''}`;
+  const originalUnit = entity.attributes?.unit_of_measurement;
+  const unit = String(locale).startsWith('de') && /^pages?$/i.test(String(originalUnit ?? '').trim()) ? 'Seiten' : originalUnit;
+  return `${value}${unit ? ' '+unit : ''}`;
 }
 
 // styles.js
@@ -196,7 +198,7 @@ class PrinterCard extends HTMLElement {
     const missing=Object.entries(e).filter(([,id])=>id && !states[id]);
     this.shadowRoot.innerHTML=`<style>${CARD_STYLE}</style><ha-card style="--status-color:${STATUS_COLORS[status.kind]}">
       <header>${e.status?`<button class="head-button" ${entityAttr(e.status)} aria-label="${escapeHTML(t.more+': '+title)}">`:'<div class="head-button">'}<span class="printer ${active?'printing':''}">${PRINTER_SVG}</span><h2>${escapeHTML(title)}</h2>${e.status?'</button>':'</div>'}</header>
-      ${e.status?`<p class="status" role="status">${escapeHTML(statusText)}</p>${raw && !['unknown','unavailable'].includes(raw) && raw!==statusText?`<p class="raw">${escapeHTML(raw)}</p>`:''}`:''}
+      ${e.status?`<p class="status" role="status">${escapeHTML(statusText)}</p>`:''}
       ${active?'<div class="paper-slot" aria-hidden="true"><div class="paper"></div></div>':''}
       ${tonerMarkup?`<div class="toners">${tonerMarkup}</div>`:''}
       ${e.drum?`<button class="drum" ${entityAttr(e.drum)}><span>${t.drum}</span><strong>${escapeHTML(displayState(states[e.drum],lang))}</strong></button>`:''}
