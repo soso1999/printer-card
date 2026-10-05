@@ -6,7 +6,7 @@ Eine eigenständige Home-Assistant-Lovelace-Karte mit vertikalen **C/M/Y/K-Kartu
 
 ## Funktionen
 
-- Zehn frei zuweisbare Entitäten: Status, Cyan, Magenta, Gelb, Schwarz, Trommel, Gesamtseiten, Farbseiten, S/W-Seiten und Duplex.
+- Dreizehn frei zuweisbare Entitäten: Status, Cyan, Magenta, Gelb, Schwarz, Trommel, Gesamtseiten, Farbseiten, S/W-Seiten und Duplex.
 - Alle Zuordnungen optional; nicht konfigurierte Werte werden ausgeblendet. Auch reine Schwarzweißdrucker funktionieren.
 - Grafischer Editor mit durchsuchbaren Vorschlägen aller vorhandenen Entitäts-IDs samt Anzeigenamen. IDs lassen sich auch direkt eintragen und löschen.
 - Statusfarben: bereit (grün), druckt (blau), Energiesparen (grau), kein Papier (rot), sonstiger Zustand (orange).
