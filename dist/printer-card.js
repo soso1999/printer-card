@@ -1,6 +1,7 @@
-/*! Printer Card v1.0.1 | MIT License */
+/*! Printer Card v1.0.2 | MIT License */
 // model.js
-const ENTITY_KEYS = ['status', 'cyan', 'magenta', 'yellow', 'black', 'drum', 'total', 'color', 'bw', 'duplex'];
+const ENTITY_KEYS = ['status', 'cyan', 'magenta', 'yellow', 'black', 'belt', 'fuser', 'drum', 'laser', 'total', 'color', 'bw', 'duplex'];
+const SUPPLY_KEYS = ['belt', 'fuser', 'drum', 'laser'];
 const DEFAULT_PATTERNS = Object.freeze({
   no_paper: ['kein papier', 'no paper', 'no-paper', 'paper empty', 'out of paper', 'papier leer'],
   printing: ['printing', 'ausdruck', '=druckt'],
@@ -10,8 +11,8 @@ const DEFAULT_PATTERNS = Object.freeze({
   tray2: ['*z2*', '*fach 2*', '*tray 2*', '*tray2*'],
 });
 const TEXT = {
-  de: {title:'Drucker',status:'Status',cyan:'Cyan',magenta:'Magenta',yellow:'Gelb',black:'Schwarz',drum:'Trommel verbleibend',total:'Gesamtseiten',color:'Farbseiten',bw:'S/W-Seiten',duplex:'Duplex',ready:'Bereit',printing:'Druckt',powersave:'Energiesparen',no_paper:'Kein Papier',tray1:'Fach 1',tray2:'Fach 2',unknown:'Unbekannt',unavailable:'Nicht verfügbar',low:'Niedrig',setup:'Entitäten im Karteneditor auswählen',missing:'Entität nicht gefunden',more:'Details'},
-  en: {title:'Printer',status:'Status',cyan:'Cyan',magenta:'Magenta',yellow:'Yellow',black:'Black',drum:'Drum remaining',total:'Total pages',color:'Color pages',bw:'B/W pages',duplex:'Duplex',ready:'Ready',printing:'Printing',powersave:'Power save',no_paper:'No paper',tray1:'Tray 1',tray2:'Tray 2',unknown:'Unknown',unavailable:'Unavailable',low:'Low',setup:'Select entities in the card editor',missing:'Entity not found',more:'Details'},
+  de: {title:'Drucker',status:'Status',cyan:'Cyan',magenta:'Magenta',yellow:'Gelb',black:'Schwarz',belt:'Bandeinheit verbleibend',fuser:'Fixiereinheit verbleibend',drum:'Trommel verbleibend',laser:'Laser verbleibend',total:'Gesamtseiten',color:'Farbseiten',bw:'S/W-Seiten',duplex:'Duplex',ready:'Bereit',printing:'Druckt',powersave:'Energiesparen',no_paper:'Kein Papier',tray1:'Fach 1',tray2:'Fach 2',unknown:'Unbekannt',unavailable:'Nicht verfügbar',low:'Niedrig',setup:'Entitäten im Karteneditor auswählen',missing:'Entität nicht gefunden',more:'Details'},
+  en: {title:'Printer',status:'Status',cyan:'Cyan',magenta:'Magenta',yellow:'Yellow',black:'Black',belt:'Belt unit remaining',fuser:'Fuser unit remaining',drum:'Drum remaining',laser:'Laser remaining',total:'Total pages',color:'Color pages',bw:'B/W pages',duplex:'Duplex',ready:'Ready',printing:'Printing',powersave:'Power save',no_paper:'No paper',tray1:'Tray 1',tray2:'Tray 2',unknown:'Unknown',unavailable:'Unavailable',low:'Low',setup:'Select entities in the card editor',missing:'Entity not found',more:'Details'},
 };
 function language(config, hass) {
   return config.language === 'auto' ? (hass?.language?.startsWith('de') ? 'de' : 'en') : config.language;
@@ -73,13 +74,13 @@ function percentage(raw) {
 function escapeHTML(value) {
   return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function displayState(entity, locale) {
+function displayState(entity, locale, showUnit = true) {
   if (!entity || ['unknown','unavailable',''].includes(entity.state)) return '—';
   const number = Number(entity.state);
   const value = entity.state.trim() && Number.isFinite(number) ? new Intl.NumberFormat(locale).format(number) : entity.state;
   const originalUnit = entity.attributes?.unit_of_measurement;
   const unit = String(locale).startsWith('de') && /^pages?$/i.test(String(originalUnit ?? '').trim()) ? 'Seiten' : originalUnit;
-  return `${value}${unit ? ' '+unit : ''}`;
+  return `${value}${showUnit && unit ? ' '+unit : ''}`;
 }
 
 // styles.js
@@ -90,7 +91,7 @@ header{display:flex;align-items:center;gap:16px}h2{font-size:21px;line-height:1.
 .status{color:var(--status-color);font-weight:600;text-align:center;margin:12px 0 0;overflow-wrap:anywhere}.raw{text-align:center;font-size:12px;color:var(--secondary-text-color,#687481);margin:4px 0 0;overflow-wrap:anywhere}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}button:focus-visible{outline:2px solid var(--primary-color,#008ac2);outline-offset:4px;border-radius:6px}.head-button{display:flex;align-items:center;gap:16px;text-align:left;width:100%}
 .toners{display:flex;justify-content:space-evenly;gap:12px;margin:25px 0 20px}.toner{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}.letter{font-weight:800;font-size:16px;color:var(--toner)}.cartridge{position:relative;width:44px;height:100px;border:2px solid var(--secondary-text-color,#75808b);border-radius:7px;background:var(--divider-color,#e5e9ed);overflow:hidden}.fill{position:absolute;bottom:0;left:0;right:0;background:var(--toner);transition:height .6s ease}.shine{position:absolute;top:9px;left:6px;right:6px;height:3px;background:#ffffff60;border-radius:3px}.pct{font-size:15px;font-weight:600}.warning .cartridge{border-color:var(--error-color,#db4437)}.warning .pct,.low{color:var(--error-color,#db4437)}.low{font-size:11px;min-height:15px}.unknown .cartridge{background:repeating-linear-gradient(135deg,transparent,transparent 5px,#8882 5px,#8882 10px)}
-.drum{border-top:1px solid var(--divider-color,#ddd);padding-top:15px;display:flex;justify-content:space-between;gap:12px;align-items:center;width:100%;text-align:left}.drum span{font-size:13px;color:var(--secondary-text-color,#687481)}.drum strong{overflow-wrap:anywhere;text-align:right}.stats{margin-top:18px;border-top:1px solid var(--divider-color,#ddd);padding-top:15px;display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:14px 8px}.stat{min-width:0}.stat span{display:block;font-size:11px;color:var(--secondary-text-color,#687481)}.stat strong{display:block;font-size:17px;margin-top:5px;overflow-wrap:anywhere}.note{font-size:13px;color:var(--secondary-text-color,#687481);margin:16px 0 0;overflow-wrap:anywhere}
+.supply{border-top:1px solid var(--divider-color,#ddd);padding-top:15px;display:flex;justify-content:space-between;gap:12px;align-items:center;width:100%;text-align:left}.supply span{font-size:13px;color:var(--secondary-text-color,#687481)}.supply strong{overflow-wrap:anywhere;text-align:right}.supply + .supply{margin-top:12px;padding-top:12px}.supply span{overflow-wrap:anywhere;min-width:0}.supply strong{flex-shrink:0}.stats{margin-top:18px;border-top:1px solid var(--divider-color,#ddd);padding-top:15px;display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:14px 8px}.stat{min-width:0}.stat span{display:block;font-size:11px;color:var(--secondary-text-color,#687481)}.stat strong{display:block;font-size:17px;margin-top:5px;overflow-wrap:anywhere}.note{font-size:13px;color:var(--secondary-text-color,#687481);margin:16px 0 0;overflow-wrap:anywhere}
 .paper-slot{height:34px;overflow:hidden;display:flex;justify-content:center;margin-top:6px}.paper{height:25px;width:34px;border:1px solid #aeb6bf;background:white;border-radius:2px;animation:feed 1.3s infinite ease-in-out}.paper:after{content:'';display:block;width:20px;height:2px;background:#bbb;margin:6px auto;box-shadow:0 5px #bbb}.printing{animation:pulse 1s infinite ease-in-out}.warning.animate{animation:warn 1.4s infinite ease-in-out}
 @keyframes pulse{50%{transform:scale(1.08)}}@keyframes feed{0%{transform:translateY(-8px);opacity:.3}50%{opacity:1}100%{transform:translateY(15px);opacity:0}}@keyframes warn{50%{opacity:.55}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
@@ -126,11 +127,13 @@ class PrinterCardEditor extends HTMLElement {
   }
   _render() {
     const c=this._config, de=language(c,this._hass)==='de', t=TEXT[de?'de':'en'];
+    const entityInputs=keys=>keys.map(key=>`<label for="entity-${key}">${t[key]}</label><input id="entity-${key}" data-entity="${key}" list="entities" autocomplete="off" spellcheck="false" value="${escapeHTML(c.entities[key] ?? '')}">`).join('');
     this.shadowRoot.innerHTML=`<style>${EDITOR_STYLE}</style><form>
       <label for="name">${de?'Name':'Name'}</label><input id="name" data-key="name" value="${escapeHTML(c.name)}" placeholder="${t.title}">
       <label for="language">${de?'Sprache':'Language'}</label><select id="language" data-key="language">${[['auto','Auto'],['de','Deutsch'],['en','English']].map(([v,l])=>`<option value="${v}" ${c.language===v?'selected':''}>${l}</option>`).join('')}</select>
       <fieldset><legend>${de?'Entitäten':'Entities'}</legend><small>${de?'Alle Felder sind optional. ID eingeben oder Vorschlag auswählen. Leeres Feld blendet den Wert aus.':'All fields are optional. Enter an ID or select a suggestion. Empty fields hide the value.'}</small>
-      <datalist id="entities"></datalist>${ENTITY_KEYS.map(key=>`<label for="entity-${key}">${t[key]}</label><input id="entity-${key}" data-entity="${key}" list="entities" autocomplete="off" spellcheck="false" value="${escapeHTML(c.entities[key] ?? '')}">`).join('')}</fieldset>
+      <datalist id="entities"></datalist>${entityInputs(ENTITY_KEYS.filter(key=>!SUPPLY_KEYS.includes(key)))}</fieldset>
+      <fieldset><legend>${de?'Verbrauchsmaterialien · Restlebensdauer':'Maintenance supplies · Remaining life'}</legend><small>${de?'Optional: Pro Komponente eine Entität auswählen. Prozent- oder Restseitenwerte werden mit ihrer Einheit angezeigt. Leer lassen zum Ausblenden.':'Optional: Select an entity for each component. Percentages or remaining page counts keep their units. Leave empty to hide.'}</small>${entityInputs(SUPPLY_KEYS)}</fieldset>
       <fieldset><legend>${de?'Darstellung':'Appearance'}</legend>
       <label class="check"><input type="checkbox" data-key="animation" ${c.animation?'checked':''}>${de?'Druck- und Warnanimationen':'Printing and warning animations'}</label>
       <label class="check"><input type="checkbox" data-key="toner_warning" ${c.toner_warning?'checked':''}>${de?'Tonerwarnung anzeigen':'Show low toner warning'}</label>
@@ -180,7 +183,7 @@ class PrinterCard extends HTMLElement {
     if(!old || old.language!==hass?.language || Object.values(this._config.entities).some(id=>old.states?.[id]!==hass?.states?.[id]))this._render();
   }
   get hass(){return this._hass;}
-  getCardSize(){return 5;}
+  getCardSize(){return 5 + Math.max(0, SUPPLY_KEYS.filter(key=>this._config?.entities[key]).length - 1);}
   getGridOptions(){return {columns:12,rows:'auto',min_columns:6};}
   _render(){
     if(!this._config)return;
@@ -194,6 +197,7 @@ class PrinterCard extends HTMLElement {
       const pct=percentage(states[e[key]]?.state),warning=c.toner_warning && pct!==null && pct<=c.warning_threshold;
       return `<button class="toner ${pct===null?'unknown':''} ${warning?'warning':''} ${c.animation?'animate':''}" style="--toner:${color}" ${entityAttr(e[key])} aria-label="${escapeHTML(t[key]+': '+(pct===null?t.unavailable:pct+'%')+(warning?' · '+t.low:''))}"><span class="letter">${letter}</span><span class="cartridge"><span class="fill" style="height:${pct ?? 0}%"></span><span class="shine"></span></span><span class="pct">${pct===null?'—':Math.round(pct*10)/10+'%'}</span><span class="low">${warning?'⚠ '+t.low:'&nbsp;'}</span></button>`;
     }).join('');
+    const supplies=SUPPLY_KEYS.filter(key=>e[key]);
     const stats=['total','color','bw','duplex'].filter(key=>e[key]);
     const missing=Object.entries(e).filter(([,id])=>id && !states[id]);
     this.shadowRoot.innerHTML=`<style>${CARD_STYLE}</style><ha-card style="--status-color:${STATUS_COLORS[status.kind]}">
@@ -201,8 +205,8 @@ class PrinterCard extends HTMLElement {
       ${e.status?`<p class="status" role="status">${escapeHTML(statusText)}</p>`:''}
       ${active?'<div class="paper-slot" aria-hidden="true"><div class="paper"></div></div>':''}
       ${tonerMarkup?`<div class="toners">${tonerMarkup}</div>`:''}
-      ${e.drum?`<button class="drum" ${entityAttr(e.drum)}><span>${t.drum}</span><strong>${escapeHTML(displayState(states[e.drum],lang))}</strong></button>`:''}
-      ${stats.length?`<div class="stats">${stats.map(key=>`<button class="stat" ${entityAttr(e[key])}><span>${t[key]}</span><strong>${escapeHTML(displayState(states[e[key]],lang))}</strong></button>`).join('')}</div>`:''}
+      ${supplies.length?`<div class="supplies">${supplies.map(key=>`<button class="supply" ${entityAttr(e[key])}><span>${t[key]}</span><strong>${escapeHTML(displayState(states[e[key]],lang))}</strong></button>`).join('')}</div>`:''}
+      ${stats.length?`<div class="stats">${stats.map(key=>`<button class="stat" ${entityAttr(e[key])}><span>${t[key]}</span><strong>${escapeHTML(displayState(states[e[key]],lang,false))}</strong></button>`).join('')}</div>`:''}
       ${!Object.values(e).some(Boolean)?`<p class="note">${t.setup}</p>`:''}
       ${missing.length && this._hass?`<p class="note">${t.missing}: ${missing.map(([,id])=>escapeHTML(id)).join(', ')}</p>`:''}
     </ha-card>`;
@@ -210,6 +214,6 @@ class PrinterCard extends HTMLElement {
 }
 if(!customElements.get('printer-card'))customElements.define('printer-card',PrinterCard);
 window.customCards=window.customCards || [];
-if(!window.customCards.some(card=>card.type==='printer-card'))window.customCards.push({type:'printer-card',name:'Printer Card',description:'Printer status, vertical CMYK toner, drum and page counts. Visual entity editor.',preview:true});
+if(!window.customCards.some(card=>card.type==='printer-card'))window.customCards.push({type:'printer-card',name:'Printer Card',description:'Printer status, vertical CMYK toner, optional maintenance supplies and page counts. Visual entity editor.',preview:true});
 
 export {};
