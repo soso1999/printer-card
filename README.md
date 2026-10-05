@@ -13,7 +13,7 @@ Wenn dir **Printer Card** gefällt und du die weitere Entwicklung unterstützen 
 </a>
 
 ## Funktionen
-
+ 
 - Dreizehn frei zuweisbare Entitäten: Status, Cyan, Magenta, Gelb, Schwarz, Trommel, Gesamtseiten, Farbseiten, S/W-Seiten und Duplex.
 - Alle Zuordnungen optional; nicht konfigurierte Werte werden ausgeblendet. Auch reine Schwarzweißdrucker funktionieren.
 - Grafischer Editor mit durchsuchbaren Vorschlägen aller vorhandenen Entitäts-IDs samt Anzeigenamen. IDs lassen sich auch direkt eintragen und löschen.
