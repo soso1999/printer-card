@@ -1,0 +1,16 @@
+{
+  "name": "printer-card",
+  "version": "1.0.0",
+  "description": "Generic Home Assistant printer card with visual entity editor and vertical CMYK toner",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "npm test && npm run build && node --check dist/printer-card.js"
+  }
+}

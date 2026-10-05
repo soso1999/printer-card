@@ -1,0 +1,24 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Printer Card – Demo</title>
+<style>
+body{margin:0;background:#f1f4f7;color:#243342;font:15px system-ui,sans-serif;padding:32px;--primary-color:#009ac7;--primary-text-color:#243342;--secondary-text-color:#697785;--divider-color:#dbe1e7;--card-background-color:#fff}body.dark{background:#111820;color:#e4eaf0;--primary-text-color:#e4eaf0;--secondary-text-color:#9ca9b6;--divider-color:#3a4551;--card-background-color:#202a35}main{max-width:1020px;margin:auto}h1{font-size:28px;margin-bottom:8px}p{line-height:1.5}nav{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}nav button,nav select{padding:10px;border:1px solid #a1adb8;border-radius:8px;font:inherit}section{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:32px;align-items:start}.editor{background:var(--card-background-color);padding:20px;border-radius:18px}#events{font-size:13px;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px} @media(max-width:760px){body{padding:16px}section{grid-template-columns:minmax(0,1fr)}}
+</style><main><h1>Printer Card</h1><p>Interaktive Vorschau mit erfundenen Sensorwerten. Der Editor und die Karte stammen aus der fertigen Distribution.</p>
+<nav><select id="state" aria-label="Druckerstatus"><option>Bereit</option><option>Ausdruck</option><option>Energiesparen</option><option>Kein Papier Z1</option><option>No paper Tray 2</option><option>unknown</option><option>unavailable</option></select><button id="theme">Hell / Dunkel</button><button id="missing">Cyan verfügbar / nicht verfügbar</button></nav>
+<section><div><printer-card></printer-card><p id="events">Klicke einen Wert an, um das Detail-Ereignis zu prüfen.</p><details><summary>Aktuelle Konfiguration</summary><pre id="config"></pre></details></div><div class="editor"><h2>Visual Editor</h2><printer-card-editor></printer-card-editor></div></section></main>
+<script type="module">
+import '../dist/printer-card.js';
+const keys=['status','cyan','magenta','yellow','black','drum','total','color','bw','duplex'];
+const values=['Bereit','82','64','18','46','12450','32510','11820','20690','8600'];
+const entities=Object.fromEntries(keys.map(key=>[key,`sensor.demo_${key}`]));
+const states=Object.fromEntries(keys.map((key,i)=>[entities[key],{state:values[i],attributes:{friendly_name:key==='status'?'Bürodrucker':key,unit_of_measurement:['cyan','magenta','yellow','black'].includes(key)?'%':key==='drum'?'Seiten':undefined}}]));
+let hass={language:'de',states};
+const card=document.querySelector('printer-card'),editor=document.querySelector('printer-card-editor');
+let config={type:'custom:printer-card',name:'Bürodrucker',entities};
+function showConfig(){document.querySelector('#config').textContent=JSON.stringify(config,null,2);}
+card.setConfig(config);card.hass=hass;editor.hass=hass;editor.setConfig(config);showConfig();
+editor.addEventListener('config-changed',e=>{config=e.detail.config;card.setConfig(config);showConfig();});
+card.addEventListener('hass-more-info',e=>{document.querySelector('#events').textContent=`hass-more-info → ${e.detail.entityId}`;});
+function update(id,state){hass={...hass,states:{...hass.states,[id]:{...hass.states[id],state}}};card.hass=hass;editor.hass=hass;}
+document.querySelector('#state').onchange=e=>update(entities.status,e.target.value);
+document.querySelector('#theme').onclick=()=>document.body.classList.toggle('dark');
+document.querySelector('#missing').onclick=()=>update(entities.cyan,hass.states[entities.cyan].state==='unavailable'?'82':'unavailable');
+</script></html>
