@@ -4,6 +4,10 @@ Eine eigenständige Home-Assistant-Lovelace-Karte mit vertikalen **C/M/Y/K-Kartu
 
 ![Karte und grafischer Editor](demo/preview.png)
 
+☕ **Gefällt dir Printer Card?**  
+Wenn du das Projekt unterstützen möchtest, kannst du mir gerne einen Kaffee spendieren:  
+[Buy Me a Coffee](https://buymeacoffee.com/soso1999)
+
 ## Funktionen
 
 - Dreizehn frei zuweisbare Entitäten: Status, Cyan, Magenta, Gelb, Schwarz, Trommel, Gesamtseiten, Farbseiten, S/W-Seiten und Duplex.
