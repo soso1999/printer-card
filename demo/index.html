@@ -6,10 +6,11 @@ body{margin:0;background:#f1f4f7;color:#243342;font:15px system-ui,sans-serif;pa
 <section><div><printer-card></printer-card><p id="events">Klicke einen Wert an, um das Detail-Ereignis zu prüfen.</p><details><summary>Aktuelle Konfiguration</summary><pre id="config"></pre></details></div><div class="editor"><h2>Visual Editor</h2><printer-card-editor></printer-card-editor></div></section></main>
 <script type="module">
 import '../dist/printer-card.js';
-const keys=['status','cyan','magenta','yellow','black','drum','total','color','bw','duplex'];
-const values=['Bereit','82','64','18','46','12450','32510','11820','20690','8600'];
+const keys=['status','cyan','magenta','yellow','black','belt','fuser','drum','laser','total','color','bw','duplex'];
+const values=['Bereit','82','64','18','46','73','91','12450','88','32510','11820','20690','8600'];
 const entities=Object.fromEntries(keys.map(key=>[key,`sensor.demo_${key}`]));
-const states=Object.fromEntries(keys.map((key,i)=>[entities[key],{state:values[i],attributes:{friendly_name:key==='status'?'Bürodrucker':key,unit_of_measurement:['cyan','magenta','yellow','black'].includes(key)?'%':key==='drum'?'Seiten':undefined}}]));
+const supplies=['belt','fuser','drum','laser'];
+const states=Object.fromEntries(keys.map((key,i)=>[entities[key],{state:values[i],attributes:{friendly_name:key==='status'?'Bürodrucker':key,unit_of_measurement:['cyan','magenta','yellow','black','belt','fuser','laser'].includes(key)?'%':key==='drum'?'pages':undefined}}]));
 let hass={language:'de',states};
 const card=document.querySelector('printer-card'),editor=document.querySelector('printer-card-editor');
 let config={type:'custom:printer-card',name:'Bürodrucker',entities};

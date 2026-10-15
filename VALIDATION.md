@@ -1,22 +1,35 @@
-# Validierung — 2026-10-05
+# Validierung
 
-## Erfolgreich geprüft
+## Repository cleanup — 2026-10-15
 
-- Version 1.0.1: keine zusätzliche Status-Rohtextzeile; deutsche Seiten-Einheit im tatsächlichen Browser-Rendering geprüft.
+Für v1.0.5 wurden Repository-Struktur und Quellstand konsolidiert:
 
-- Acht automatisierte Logiktests: Statusprioritäten, DE/EN-Muster, Fach 1/2, Ersatzmuster und leere Kategorien, exakte/Wildcard-Erkennung, Prozentwerte, Konfigurationsvalidierung und HTML-Escaping.
-- Distribution gebaut und JavaScript-Syntax geprüft.
-- Die tatsächliche gebaute Distribution wurde in lokalem Chrome mit Playwright geladen. Keine JavaScript-Browserfehler.
-- Vier Kartuschen, niedriger Tonerstand, zehn Editorfelder und Entitätsvorschläge.
-- Statuswechsel, Druckanimation und Abschalten der Animation.
-- Papierfehler Fach 2, individuelle Statusmuster und Zurücksetzen.
-- Löschen/Wiederzuweisen einer Entität, fehlende Entität und unavailable-Wert.
-- Detail-Ereignis mit korrekter Entitäts-ID.
-- HTML in einem Kartentitel wird als Text angezeigt.
-- Sprachwechsel, 320-Pixel-Ansicht, dunkles Theme und reduzierte Bewegung.
+- `src/` bildet jetzt dieselben 13 optionalen Entitäten ab wie die aktuelle Distribution:
+  Status, Cyan, Magenta, Gelb, Schwarz, Bandeinheit, Fixiereinheit, Trommel, Laser, Gesamtseiten, Farbseiten, S/W-Seiten und Duplex.
+- Die vier Wartungs-/Verbrauchskomponenten `belt`, `fuser`, `drum` und `laser` werden im Visual Editor separat als Restlebensdauer geführt.
+- `dist/printer-card.js` und die Root-Datei `printer-card.js` werden aus demselben Source-Stand erzeugt.
+- README, Demo, Tests, Changelog und Versionsnummer wurden auf denselben Funktionsstand gebracht.
+- GitHub-Workflows für Checks und Releases wurden ergänzt.
+- Das öffentliche GitHub-Repository und Releases sind vorhanden; die HACS-Installation als benutzerdefiniertes Dashboard-Repository ist dokumentiert.
 
-## Noch nicht live geprüft
+## Automatisierte Checks
 
-Es war keine echte Home-Assistant-Instanz und kein veröffentlichtes GitHub-Repository mit diesem Projekt verbunden. Daher sind HA-Kartenauswahl, Konfiguration speichern/neu laden, echte Detaildialoge, Sections-Layout, HACS-Installation/Upgrade sowie die GitHub-Workflows noch nicht im Zielsystem getestet. Die Demo stellt das `hass`-Objekt und die Konfigurationsereignisse nach; sie ersetzt keinen Integrationstest mit Home Assistant.
+`npm run check` führt aus:
 
-Vor der ersten öffentlichen Freigabe in einer HA-Testinstallation: JS-Ressource laden, Karte über die Kartenauswahl hinzufügen, alle benötigten Felder zuweisen, Muster ändern, speichern, neu laden und anschließend Installation/Upgrade über ein HACS-Custom-Repository testen. Safari/Firefox wurden nicht separat getestet; die Entitätsvorschläge verwenden das native HTML-datalist-Element.
+- Node-Logiktests,
+- Build von `dist/printer-card.js`,
+- JavaScript-Syntaxprüfung der gebauten Distribution.
+
+Die Tests decken Statusprioritäten, DE/EN-Muster, Fach 1/2, Ersatzmuster und leere Kategorien, exakte/Wildcard-Erkennung, Prozentwerte, Konfigurationsvalidierung, HTML-Escaping, alle 13 Entitätsschlüssel sowie Einheitenbehandlung ab.
+
+Der optionale Playwright-Browsertest prüft zusätzlich die gebaute Karte, 13 Editorfelder, vier Wartungskomponenten, Änderungen im Visual Editor, Entity-Auswahl/-Entfernung, Muster, fehlende Werte, HTML-Escaping, Klickereignisse, mobile Darstellung, dunkles Theme und reduzierte Bewegung.
+
+## Bereits zuvor geprüft
+
+- Die gebaute Distribution wurde in lokalem Chrome mit Playwright geladen; frühere Browserprüfungen liefen ohne JavaScript-Browserfehler.
+- Statuswechsel, Druckanimation, Tonerwarnung, Papierfehler/Fach-Erkennung, Detail-Ereignisse und Sprachwechsel wurden in der Demo geprüft.
+- Die aktuelle Karte unterstützt optionale Wartungswerte mit vorhandener Einheit, etwa Prozent oder Restseiten.
+
+## Noch nicht als Teil dieses Cleanup-Schritts behauptet
+
+Dieses Cleanup dokumentiert und synchronisiert den Repository-Stand. Es behauptet keinen neuen Hardware-, Drucker-, HACS-Upgrade- oder vollständigen Home-Assistant-End-to-End-Test. Die interaktive Demo ersetzt keinen Integrationstest mit einer realen Home-Assistant-Instanz.

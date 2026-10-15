@@ -1,7 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeConfig,classifyStatus,percentage,matches,escapeHTML,displayState} from '../src/model.js';
+import {ENTITY_KEYS,SUPPLY_KEYS,normalizeConfig,classifyStatus,percentage,matches,escapeHTML,displayState} from '../src/model.js';
 const config=normalizeConfig({});
+
+test('Current entity model exposes all 13 optional assignments',()=>{
+  assert.deepEqual(ENTITY_KEYS,['status','cyan','magenta','yellow','black','belt','fuser','drum','laser','total','color','bw','duplex']);
+  assert.deepEqual(SUPPLY_KEYS,['belt','fuser','drum','laser']);
+});
+
 test('German and English states; paper errors take priority',()=>{
   for(const [raw,kind] of [['Bereit','ready'],['READY','ready'],['Ausdruck','printing'],['printing','printing'],['Energiesparen','powersave'],['sleep','powersave'],['No paper / printing','no_paper'],['not ready','other'],['','unknown'],['unknown','unknown'],['unavailable','unavailable']])assert.equal(classifyStatus(raw,config).kind,kind,raw);
 });
@@ -37,12 +43,12 @@ test('Entity IDs have no defaults, configuration validates and preserves extras'
   for(const invalid of [{warning_threshold:-1},{warning_threshold:NaN},{warning_threshold:101},{entities:[]},{status_patterns:{ready:'ready'}},{animation:'false'},{language:'xx'}])assert.throws(()=>normalizeConfig(invalid));
   assert.deepEqual(normalizeConfig({grid_options:{columns:6}}).grid_options,{columns:6});
 });
-test('Escaping and units',()=>{
+test('Escaping and optional units',()=>{
   assert.equal(escapeHTML('<img onerror="x">'), '&lt;img onerror=&quot;x&quot;&gt;');
   assert.equal(displayState({state:'12345',attributes:{unit_of_measurement:'pages'}},'en'),'12,345 pages');
+  assert.equal(displayState({state:'12345',attributes:{unit_of_measurement:'pages'}},'en',false),'12,345');
   assert.equal(displayState({state:'unavailable'},'en'),'—');
 });
-
 test('German page units are localized while other units and English remain unchanged',()=>{
   for(const unit of ['pages','page','Pages']) assert.equal(displayState({state:'4980',attributes:{unit_of_measurement:unit}},'de'),'4.980 Seiten');
   assert.equal(displayState({state:'84',attributes:{unit_of_measurement:'%'}},'de'),'84 %');

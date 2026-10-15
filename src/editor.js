@@ -1,4 +1,4 @@
-import {ENTITY_KEYS, DEFAULT_PATTERNS, TEXT, normalizeConfig, language, escapeHTML} from './model.js';
+import {ENTITY_KEYS, SUPPLY_KEYS, DEFAULT_PATTERNS, TEXT, normalizeConfig, language, escapeHTML} from './model.js';
 import {EDITOR_STYLE} from './styles.js';
 export class PrinterCardEditor extends HTMLElement {
   constructor() { super(); this.attachShadow({mode:'open'}); this._config = normalizeConfig({}); }
@@ -25,11 +25,13 @@ export class PrinterCardEditor extends HTMLElement {
   }
   _render() {
     const c=this._config, de=language(c,this._hass)==='de', t=TEXT[de?'de':'en'];
+    const entityInputs=keys=>keys.map(key=>`<label for="entity-${key}">${t[key]}</label><input id="entity-${key}" data-entity="${key}" list="entities" autocomplete="off" spellcheck="false" value="${escapeHTML(c.entities[key] ?? '')}">`).join('');
     this.shadowRoot.innerHTML=`<style>${EDITOR_STYLE}</style><form>
       <label for="name">${de?'Name':'Name'}</label><input id="name" data-key="name" value="${escapeHTML(c.name)}" placeholder="${t.title}">
       <label for="language">${de?'Sprache':'Language'}</label><select id="language" data-key="language">${[['auto','Auto'],['de','Deutsch'],['en','English']].map(([v,l])=>`<option value="${v}" ${c.language===v?'selected':''}>${l}</option>`).join('')}</select>
       <fieldset><legend>${de?'Entitäten':'Entities'}</legend><small>${de?'Alle Felder sind optional. ID eingeben oder Vorschlag auswählen. Leeres Feld blendet den Wert aus.':'All fields are optional. Enter an ID or select a suggestion. Empty fields hide the value.'}</small>
-      <datalist id="entities"></datalist>${ENTITY_KEYS.map(key=>`<label for="entity-${key}">${t[key]}</label><input id="entity-${key}" data-entity="${key}" list="entities" autocomplete="off" spellcheck="false" value="${escapeHTML(c.entities[key] ?? '')}">`).join('')}</fieldset>
+      <datalist id="entities"></datalist>${entityInputs(ENTITY_KEYS.filter(key=>!SUPPLY_KEYS.includes(key)))}</fieldset>
+      <fieldset><legend>${de?'Verbrauchsmaterialien · Restlebensdauer':'Maintenance supplies · Remaining life'}</legend><small>${de?'Optional: Pro Komponente eine Entität auswählen. Prozent- oder Restseitenwerte werden mit ihrer Einheit angezeigt. Leer lassen zum Ausblenden.':'Optional: Select an entity for each component. Percentages or remaining page counts keep their units. Leave empty to hide.'}</small>${entityInputs(SUPPLY_KEYS)}</fieldset>
       <fieldset><legend>${de?'Darstellung':'Appearance'}</legend>
       <label class="check"><input type="checkbox" data-key="animation" ${c.animation?'checked':''}>${de?'Druck- und Warnanimationen':'Printing and warning animations'}</label>
       <label class="check"><input type="checkbox" data-key="toner_warning" ${c.toner_warning?'checked':''}>${de?'Tonerwarnung anzeigen':'Show low toner warning'}</label>

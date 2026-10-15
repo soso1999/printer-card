@@ -16,8 +16,10 @@ try{
  await card.locator('h2').waitFor();
  assert.equal(await card.locator('.toner').count(),4);
  assert.equal(await card.locator('.warning').count(),1);
- assert.equal(await editor.locator('[data-entity]').count(),10);
- assert.equal(await editor.locator('datalist option').count(),10);
+ assert.equal(await card.locator('.supply').count(),4);
+ assert.equal(await editor.locator('[data-entity]').count(),13);
+ assert.equal(await editor.locator('datalist option').count(),13);
+ assert.match(await card.locator('.supply').filter({hasText:'Trommel'}).locator('strong').textContent(),/Seiten/);
  await page.screenshot({path:resolve(root,'demo/preview.png'),fullPage:false});
  await page.selectOption('#state','Ausdruck');
  assert.equal(await card.locator('.paper').count(),1);
@@ -27,7 +29,7 @@ try{
  assert.equal(await card.locator('.status').textContent(),'Kein Papier · Fach 2');
  assert.equal(await card.locator('.raw').count(),0);
  await card.evaluate(el=>{const hass=el.hass;const id='sensor.demo_total';el.hass={...hass,states:{...hass.states,[id]:{...hass.states[id],attributes:{unit_of_measurement:'pages'}}}};});
- assert.equal(await card.locator('.stat').first().locator('strong').textContent(),'32.510 Seiten');
+ assert.equal(await card.locator('.stat').first().locator('strong').textContent(),'32.510');
  await editor.locator('#entity-cyan').fill('');await editor.locator('#entity-cyan').press('Tab');
  assert.equal(await card.locator('.toner').count(),3);
  await editor.locator('#entity-cyan').fill('sensor.nonexistent');await editor.locator('#entity-cyan').press('Tab');
@@ -53,5 +55,5 @@ try{
  await page.evaluate(()=>window.scrollTo(0,0));
  await page.screenshot({path:resolve(root,'demo/preview-mobile-dark.png'),fullPage:false});
  assert.deepEqual(errors,[]);
- console.log('PASS: built bundle, editor 10 entity fields, datalist, mappings/reset, removals/missing data, animations, more-info, HTML escaping, language, mobile, dark theme, reduced motion; no browser errors.');
+ console.log('PASS: built bundle, editor 13 entity fields, four maintenance supplies, datalist, mappings/reset, removals/missing data, animations, more-info, HTML escaping, language, mobile, dark theme, reduced motion; no browser errors.');
 }finally{await browser?.close();server.close();}

@@ -1,4 +1,4 @@
-import {TEXT, normalizeConfig, language, classifyStatus, percentage, displayState, escapeHTML} from './model.js';
+import {SUPPLY_KEYS, TEXT, normalizeConfig, language, classifyStatus, percentage, displayState, escapeHTML} from './model.js';
 import {CARD_STYLE} from './styles.js';
 import './editor.js';
 const STATUS_COLORS={ready:'#4caf50',printing:'#03a9f4',powersave:'#9099a2',no_paper:'var(--error-color,#f44336)',unknown:'#9099a2',unavailable:'#9099a2',other:'#ef9a23'};
@@ -21,7 +21,7 @@ export class PrinterCard extends HTMLElement {
     if(!old || old.language!==hass?.language || Object.values(this._config.entities).some(id=>old.states?.[id]!==hass?.states?.[id]))this._render();
   }
   get hass(){return this._hass;}
-  getCardSize(){return 5;}
+  getCardSize(){return 5 + Math.max(0, SUPPLY_KEYS.filter(key=>this._config?.entities[key]).length - 1);}
   getGridOptions(){return {columns:12,rows:'auto',min_columns:6};}
   _render(){
     if(!this._config)return;
@@ -35,6 +35,7 @@ export class PrinterCard extends HTMLElement {
       const pct=percentage(states[e[key]]?.state),warning=c.toner_warning && pct!==null && pct<=c.warning_threshold;
       return `<button class="toner ${pct===null?'unknown':''} ${warning?'warning':''} ${c.animation?'animate':''}" style="--toner:${color}" ${entityAttr(e[key])} aria-label="${escapeHTML(t[key]+': '+(pct===null?t.unavailable:pct+'%')+(warning?' · '+t.low:''))}"><span class="letter">${letter}</span><span class="cartridge"><span class="fill" style="height:${pct ?? 0}%"></span><span class="shine"></span></span><span class="pct">${pct===null?'—':Math.round(pct*10)/10+'%'}</span><span class="low">${warning?'⚠ '+t.low:'&nbsp;'}</span></button>`;
     }).join('');
+    const supplies=SUPPLY_KEYS.filter(key=>e[key]);
     const stats=['total','color','bw','duplex'].filter(key=>e[key]);
     const missing=Object.entries(e).filter(([,id])=>id && !states[id]);
     this.shadowRoot.innerHTML=`<style>${CARD_STYLE}</style><ha-card style="--status-color:${STATUS_COLORS[status.kind]}">
@@ -42,8 +43,8 @@ export class PrinterCard extends HTMLElement {
       ${e.status?`<p class="status" role="status">${escapeHTML(statusText)}</p>`:''}
       ${active?'<div class="paper-slot" aria-hidden="true"><div class="paper"></div></div>':''}
       ${tonerMarkup?`<div class="toners">${tonerMarkup}</div>`:''}
-      ${e.drum?`<button class="drum" ${entityAttr(e.drum)}><span>${t.drum}</span><strong>${escapeHTML(displayState(states[e.drum],lang))}</strong></button>`:''}
-      ${stats.length?`<div class="stats">${stats.map(key=>`<button class="stat" ${entityAttr(e[key])}><span>${t[key]}</span><strong>${escapeHTML(displayState(states[e[key]],lang))}</strong></button>`).join('')}</div>`:''}
+      ${supplies.length?`<div class="supplies">${supplies.map(key=>`<button class="supply" ${entityAttr(e[key])}><span>${t[key]}</span><strong>${escapeHTML(displayState(states[e[key]],lang))}</strong></button>`).join('')}</div>`:''}
+      ${stats.length?`<div class="stats">${stats.map(key=>`<button class="stat" ${entityAttr(e[key])}><span>${t[key]}</span><strong>${escapeHTML(displayState(states[e[key]],lang,false))}</strong></button>`).join('')}</div>`:''}
       ${!Object.values(e).some(Boolean)?`<p class="note">${t.setup}</p>`:''}
       ${missing.length && this._hass?`<p class="note">${t.missing}: ${missing.map(([,id])=>escapeHTML(id)).join(', ')}</p>`:''}
     </ha-card>`;
@@ -51,4 +52,4 @@ export class PrinterCard extends HTMLElement {
 }
 if(!customElements.get('printer-card'))customElements.define('printer-card',PrinterCard);
 window.customCards=window.customCards || [];
-if(!window.customCards.some(card=>card.type==='printer-card'))window.customCards.push({type:'printer-card',name:'Printer Card',description:'Printer status, vertical CMYK toner, drum and page counts. Visual entity editor.',preview:true});
+if(!window.customCards.some(card=>card.type==='printer-card'))window.customCards.push({type:'printer-card',name:'Printer Card',description:'Printer status, vertical CMYK toner, optional maintenance supplies and page counts. Visual entity editor.',preview:true});

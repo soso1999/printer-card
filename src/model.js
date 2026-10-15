@@ -1,4 +1,5 @@
-export const ENTITY_KEYS = ['status', 'cyan', 'magenta', 'yellow', 'black', 'drum', 'total', 'color', 'bw', 'duplex'];
+export const ENTITY_KEYS = ['status', 'cyan', 'magenta', 'yellow', 'black', 'belt', 'fuser', 'drum', 'laser', 'total', 'color', 'bw', 'duplex'];
+export const SUPPLY_KEYS = ['belt', 'fuser', 'drum', 'laser'];
 export const DEFAULT_PATTERNS = Object.freeze({
   no_paper: ['kein papier', 'no paper', 'no-paper', 'paper empty', 'out of paper', 'papier leer'],
   printing: ['printing', 'ausdruck', '=druckt'],
@@ -8,8 +9,8 @@ export const DEFAULT_PATTERNS = Object.freeze({
   tray2: ['*z2*', '*fach 2*', '*tray 2*', '*tray2*'],
 });
 export const TEXT = {
-  de: {title:'Drucker',status:'Status',cyan:'Cyan',magenta:'Magenta',yellow:'Gelb',black:'Schwarz',drum:'Trommel verbleibend',total:'Gesamtseiten',color:'Farbseiten',bw:'S/W-Seiten',duplex:'Duplex',ready:'Bereit',printing:'Druckt',powersave:'Energiesparen',no_paper:'Kein Papier',tray1:'Fach 1',tray2:'Fach 2',unknown:'Unbekannt',unavailable:'Nicht verfügbar',low:'Niedrig',setup:'Entitäten im Karteneditor auswählen',missing:'Entität nicht gefunden',more:'Details'},
-  en: {title:'Printer',status:'Status',cyan:'Cyan',magenta:'Magenta',yellow:'Yellow',black:'Black',drum:'Drum remaining',total:'Total pages',color:'Color pages',bw:'B/W pages',duplex:'Duplex',ready:'Ready',printing:'Printing',powersave:'Power save',no_paper:'No paper',tray1:'Tray 1',tray2:'Tray 2',unknown:'Unknown',unavailable:'Unavailable',low:'Low',setup:'Select entities in the card editor',missing:'Entity not found',more:'Details'},
+  de: {title:'Drucker',status:'Status',cyan:'Cyan',magenta:'Magenta',yellow:'Gelb',black:'Schwarz',belt:'Bandeinheit verbleibend',fuser:'Fixiereinheit verbleibend',drum:'Trommel verbleibend',laser:'Laser verbleibend',total:'Gesamtseiten',color:'Farbseiten',bw:'S/W-Seiten',duplex:'Duplex',ready:'Bereit',printing:'Druckt',powersave:'Energiesparen',no_paper:'Kein Papier',tray1:'Fach 1',tray2:'Fach 2',unknown:'Unbekannt',unavailable:'Nicht verfügbar',low:'Niedrig',setup:'Entitäten im Karteneditor auswählen',missing:'Entität nicht gefunden',more:'Details'},
+  en: {title:'Printer',status:'Status',cyan:'Cyan',magenta:'Magenta',yellow:'Yellow',black:'Black',belt:'Belt unit remaining',fuser:'Fuser unit remaining',drum:'Drum remaining',laser:'Laser remaining',total:'Total pages',color:'Color pages',bw:'B/W pages',duplex:'Duplex',ready:'Ready',printing:'Printing',powersave:'Power save',no_paper:'No paper',tray1:'Tray 1',tray2:'Tray 2',unknown:'Unknown',unavailable:'Unavailable',low:'Low',setup:'Select entities in the card editor',missing:'Entity not found',more:'Details'},
 };
 export function language(config, hass) {
   return config.language === 'auto' ? (hass?.language?.startsWith('de') ? 'de' : 'en') : config.language;
@@ -71,11 +72,11 @@ export function percentage(raw) {
 export function escapeHTML(value) {
   return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-export function displayState(entity, locale) {
+export function displayState(entity, locale, showUnit = true) {
   if (!entity || ['unknown','unavailable',''].includes(entity.state)) return '—';
   const number = Number(entity.state);
   const value = entity.state.trim() && Number.isFinite(number) ? new Intl.NumberFormat(locale).format(number) : entity.state;
   const originalUnit = entity.attributes?.unit_of_measurement;
   const unit = String(locale).startsWith('de') && /^pages?$/i.test(String(originalUnit ?? '').trim()) ? 'Seiten' : originalUnit;
-  return `${value}${unit ? ' '+unit : ''}`;
+  return `${value}${showUnit && unit ? ' '+unit : ''}`;
 }
