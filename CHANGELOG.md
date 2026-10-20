@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.6 — 2026-10-20
+
+- Added official HACS validation for the dashboard catalog submission.
+- No changes to card behavior or configuration; existing setups remain compatible.
+
 ## 1.0.5 — 2026-10-15
 
 - Repository cleanup: editable `src/` sources now match the current 13-entity distribution.

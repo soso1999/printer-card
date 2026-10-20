@@ -1,4 +1,4 @@
-/*! Printer Card v1.0.5 | MIT License */
+/*! Printer Card v1.0.6 | MIT License */
 // model.js
 const ENTITY_KEYS = ['status', 'cyan', 'magenta', 'yellow', 'black', 'belt', 'fuser', 'drum', 'laser', 'total', 'color', 'bw', 'duplex'];
 const SUPPLY_KEYS = ['belt', 'fuser', 'drum', 'laser'];

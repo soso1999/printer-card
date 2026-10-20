@@ -1,6 +1,6 @@
 {
   "name": "printer-card",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Generic Home Assistant printer card with visual entity editor, vertical CMYK toner and maintenance supplies",
   "type": "module",
   "license": "MIT",
