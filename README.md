@@ -29,7 +29,44 @@ Wenn dir **Printer Card** gefällt und du die weitere Entwicklung unterstützen 
 - Klick auf Druckerkopf, Toner, Wartungskomponente oder Zähler öffnet den Home-Assistant-Detaildialog.
 - Lokale Einzeldatei; keine externen Schriftarten, CDN-Imports oder Laufzeitpakete.
 
-## Direkt installieren
+## Installation über HACS (empfohlen)
+
+**Printer Card** ist im [offiziellen HACS-Katalog](https://github.com/hacs/default/blob/master/plugin)
+enthalten. Ein benutzerdefiniertes Repository ist **nicht erforderlich**.
+Voraussetzung ist ein bereits [eingerichtetes HACS](https://www.hacs.xyz/docs/use/).
+
+1. **HACS** öffnen und nach **Printer Card** suchen; bei Bedarf nach Typ **Dashboard** filtern.
+2. Den Eintrag öffnen und **Herunterladen** wählen.
+3. Browser vollständig neu laden.
+4. Dashboard bearbeiten → Karte hinzufügen → **Printer Card**.
+5. Im Visual Editor die gewünschten Entitäten auswählen.
+
+Falls die Karte nicht erscheint, unter **Einstellungen → Dashboards → Menü → Ressourcen**
+prüfen, ob `/hacsfiles/printer-card/printer-card.js` als **JavaScript-Modul** eingetragen ist.
+Fehlt die Ressource, diese hinzufügen und den Browser erneut vollständig neu laden.
+Der Menüpunkt Ressourcen setzt gegebenenfalls den erweiterten Modus im Benutzerprofil voraus.
+
+Bei YAML-verwalteten Dashboard-Ressourcen den Eintrag selbst ergänzen:
+
+```yaml
+resources:
+  - url: /hacsfiles/printer-card/printer-card.js
+    type: module
+```
+
+Falls erforderlich, eine manuelle Karte mit `type: custom:printer-card` anlegen und
+anschließend den visuellen Editor öffnen.
+
+**Bereits über HACS installiert?** Die bestehende Karte und ihre Konfiguration können
+weiterverwendet werden. Die Katalogaufnahme erfordert keine Neuinstallation.
+Updates werden über HACS angeboten; danach den Browser neu laden.
+
+**Wechsel von manueller Installation zu HACS:** Nach dem HACS-Download den bisherigen
+Ressourceneintrag `/local/printer-card.js` durch den HACS-Eintrag ersetzen bzw. entfernen,
+wenn dieser bereits vorhanden ist. Die Karte nur einmal als Ressource laden;
+die Dashboard-Konfiguration kann erhalten bleiben.
+
+## Manuelle Installation (Alternative ohne HACS)
 
 Ein Build ist für die Nutzung **nicht erforderlich**. `dist/printer-card.js` und `printer-card.js` sind bereits enthalten.
 
@@ -54,18 +91,6 @@ resources:
 ```
 
 Bei Updates Browsercache leeren oder die Ressourcen-URL um eine Versionsabfrage wie `?v=1.0.6` ergänzen. Jede Distribution nur einmal als Ressource laden.
-
-## Installation über HACS
-
-Das öffentliche Repository kann als **benutzerdefiniertes HACS-Dashboard-Repository** hinzugefügt werden:
-
-1. HACS → Menü → **Benutzerdefinierte Repositories**.
-2. `https://github.com/soso1999/printer-card` eintragen.
-3. Kategorie **Dashboard** wählen.
-4. **Printer Card** installieren bzw. aktualisieren.
-5. Browser neu laden.
-
-`hacs.json` verweist auf `printer-card.js`. GitHub-Releases enthalten die einzelne JavaScript-Datei. Eine Aufnahme in die HACS-Standardliste ist ein separater Prozess und für die Nutzung als benutzerdefiniertes Repository nicht erforderlich.
 
 ## Konfiguration
 
