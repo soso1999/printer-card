@@ -2,7 +2,7 @@
 
 Eine eigenständige **Home-Assistant-Lovelace-Karte** für Druckerstatus, vertikale **C/M/Y/K-Tonerstände**, optionale Wartungskomponenten und Seitenzähler – inklusive grafischem Konfigurationseditor.
 
-[Lizenz: MIT](LICENSE) · [Version 1.0.6](CHANGELOG.md)
+[Lizenz: MIT](LICENSE) · [Version 1.0.7](CHANGELOG.md)
 
 ![Karte und grafischer Editor](demo/preview.png)
 
@@ -89,7 +89,7 @@ resources:
     type: module
 ```
 
-Bei Updates Browsercache leeren oder die Ressourcen-URL um eine Versionsabfrage wie `?v=1.0.6` ergänzen. Jede Distribution nur einmal als Ressource laden.
+Bei Updates Browsercache leeren oder die Ressourcen-URL um eine Versionsabfrage wie `?v=1.0.7` ergänzen. Jede Distribution nur einmal als Ressource laden.
 
 ## Konfiguration
 
@@ -232,7 +232,7 @@ Siehe [VALIDATION.md](VALIDATION.md) für den dokumentierten Prüfstand.
 2. `npm run check` ausführen.
 3. Sicherstellen, dass `dist/printer-card.js` und `printer-card.js` identisch sind.
 4. Änderungen committen und pushen.
-5. Einen Tag im Format `v1.0.6` pushen.
+5. Einen Tag im Format `v1.0.7` pushen.
 
 Der Release-Workflow prüft, ob Tag und `package.json`-Version zusammenpassen, baut die Karte erneut und erstellt ein GitHub-Release mit `printer-card.js` als Asset.
 
