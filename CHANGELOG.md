@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.7 — 2026-10-25
+
+- Replace external license/version badge images with text links in the HACS documentation.
+- Document installation directly from the official HACS catalog.
+- Publish the corrected README with a new release because HACS reads documentation from the installed/latest release ref.
+- No changes to card behavior or configuration.
+
+
 ## 1.0.6 — 2026-10-20
 
 - Added official HACS validation for the dashboard catalog submission.
