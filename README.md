@@ -2,8 +2,7 @@
 
 Eine eigenständige **Home-Assistant-Lovelace-Karte** für Druckerstatus, vertikale **C/M/Y/K-Tonerstände**, optionale Wartungskomponenten und Seitenzähler – inklusive grafischem Konfigurationseditor.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.6-blue.svg)](CHANGELOG.md)
+[Lizenz: MIT](LICENSE) · [Version 1.0.6](CHANGELOG.md)
 
 ![Karte und grafischer Editor](demo/preview.png)
 
